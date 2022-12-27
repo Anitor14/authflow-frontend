@@ -1,15 +1,19 @@
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const { attachCookiesToResponse, createTokenUser } = require("../utils");
-const crypto = require("crypto");
+const {
+  attachCookiesToResponse,
+  createTokenUser,
+  sendVerificationEmail,
+} = require("../utils");
+const crypto = require("crypto"); // we are using this to create a random token.
 const sendEmail = require("../utils/sendEmail");
 
 const register = async (req, res) => {
   const { email, name, password } = req.body;
 
   const emailAlreadyExists = await User.findOne({ email });
-  
+
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError("Email already exists");
   }
